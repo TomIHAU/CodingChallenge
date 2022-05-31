@@ -1,9 +1,11 @@
 const router = require("express").Router();
-const { Packaging, Options } = require("../../models");
+const { Packaging, Options, Products } = require("../../models");
 
 router.get("/", async (req, res) => {
   try {
-    const packagingData = await Packaging.findAll({});
+    const packagingData = await Packaging.findAll({
+      include: [{ model: Options }, { model: Products }],
+    });
     const packaging = await packagingData.map((Data) =>
       Data.get({ plain: true })
     );
@@ -13,13 +15,26 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/:id", async (req, res) => {
   try {
-    const packagingData = await Packaging.findAll({});
-    const packaging = await packagingData.map((Data) =>
-      Data.get({ plain: true })
-    );
-    res.status(200).json(packaging);
+    const exists = await Packaging.findOne({
+      where: { product_id: req.params.id },
+    });
+    if (!exists) {
+      const packagingData = await Packaging.Create({
+        product_id: req.params.id,
+      });
+    }
+    const { quantity, price } = req.body;
+    if (!quantity || !price) {
+      res.status(400).json({ message: "please input new options data" });
+    }
+    const newOption = await Options.create({
+      packaging_id: req.params.id,
+      quantity,
+      price,
+    });
+    res.status(200).json(newOption);
   } catch (err) {
     res.status(500).json(err);
   }
