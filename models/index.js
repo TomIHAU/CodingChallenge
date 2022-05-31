@@ -9,6 +9,7 @@ Packaging.belongsTo(Products, {
 
 Products.hasMany(Packaging, {
   foreignKey: "product_id",
+  onDelete: "cascade",
 });
 
 module.exports = { Products, Options, Packaging, Order };
