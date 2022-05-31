@@ -11,11 +11,11 @@ Options.init(
       primaryKey: true,
       autoIncrement: true,
     },
-    product_id: {
+    packaging_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "products",
+        model: "packaging",
         key: "id",
       },
     },
