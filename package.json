@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/TomIHAU/CodingChallenge#readme",
   "dependencies": {
+    "express": "^4.18.1",
     "sequelize": "^6.20.1"
   }
 }
