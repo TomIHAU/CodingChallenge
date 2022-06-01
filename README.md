@@ -41,11 +41,24 @@ STEP 4
 
 From the api platform of your choice, the following routes are active:
 
-    4.1 http://localhost:3001/api/products POST : requires a request object with {name, code, price} keys
-    4.2 http://localhost:3001/api/products GET : for all products
-    4.3 http://localhost:3001/api/products/:id PUT : where id is the id of the product to be edited requires a request object with {name, code, price} keys
-    4.4 http://localhost:3001/api/products/:id DELETE : where id is the id of the product to be deleted
-    4.5 http://localhost:3001/api/packaging GET : for all packages
-    4.6 http://localhost:3001/api/packaging/:id POST : where the id is the packaging to have an option added to requires a request object with {quantity, price} keys
-    4.7 http://localhost:3001/api/order GET : requires a request object with keys:product.code value:orderAmount, e.g. {"CE":10, "HM":8}
+    4.1 http://localhost:3001/api/products 
+        POST : requires a request object with {name, code, price} keys
+        
+    4.2 http://localhost:3001/api/products 
+        GET : for all products
+        
+    4.3 http://localhost:3001/api/products/:id 
+        PUT : where id is the id of the product to be edited requires a request object with {name, code, price} keys
+        
+    4.4 http://localhost:3001/api/products/:id 
+        DELETE : where id is the id of the product to be deleted
+        
+    4.5 http://localhost:3001/api/packaging 
+        GET : for all packages
+        
+    4.6 http://localhost:3001/api/packaging/:id 
+        POST : where the id is the packaging to have an option added to requires a request object with {quantity, price} keys
+        
+    4.7 http://localhost:3001/api/order 
+        GET : requires a request object with keys:product.code value:orderAmount, e.g. {"CE":10, "HM":8}
 
