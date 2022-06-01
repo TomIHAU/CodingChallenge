@@ -9,7 +9,18 @@ router.get("/", async (req, res) => {
     const packaging = await packagingData.map((Data) =>
       Data.get({ plain: true })
     );
-    res.status(200).json(packaging);
+    res.status(200).json(
+      packaging.map((e) => {
+        return {
+          code: e.product.code,
+          options: [
+            ...e.options.map((e) => {
+              return { quantity: e.quantity, price: e.price };
+            }),
+          ],
+        };
+      })
+    );
   } catch (err) {
     res.status(500).json(err);
   }
