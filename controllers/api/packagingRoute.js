@@ -9,6 +9,7 @@ router.get("/", async (req, res) => {
     const packaging = await packagingData.map((Data) =>
       Data.get({ plain: true })
     );
+    //returns the data in the structure requested in the assignment.
     res.status(200).json(
       packaging.map((e) => {
         return {
