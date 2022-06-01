@@ -1,18 +1,23 @@
 var assert = require("assert");
-const { ShoppingCart, apple, orange } = require("../");
 
-describe("", function () {
-  describe("#", function () {
-    it("", function () {});
+// it("db.connection.connect should ...", function (done) {
+//   db.connection.connect(function (err, result) {
+//     if (err) {
+//       done(err);
+//       return;
+//     }
+//     expect(result).to.equal("SQL CONNECT SUCCESSFUL.");
+//     done();
+//   });
+// });
+
+describe("test", function () {
+  describe("#test", function () {
+    it("should test", function () {
+      let userRequest = { CE: 10, HM: 8 };
+    });
   });
   describe("", function () {
-    it("", function () {
-      let cart = new ShoppingCart();
-      cart.addProduct = apple;
-      cart.addProduct = apple;
-      cart.addProduct = apple;
-      cart.removeProduct = apple;
-      assert.equal(cart.total, 9.9);
-    });
+    it("", function () {});
   });
 });

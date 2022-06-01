@@ -6,7 +6,7 @@ router.get("/", async (req, res) => {
   try {
     let totalCost = 0;
     let totalPackages = 0;
-    let bestOrder;
+    let bestOrder = [];
 
     //loops through the order by key. the request data structure should use the product code as the key and the order amount as the value e.g. CE:10
 
@@ -62,6 +62,7 @@ router.get("/", async (req, res) => {
               reqAmount -= optionsSorted[i].quantity;
               cost += optionsSorted[i].price;
               orderAmount++;
+              order.push(optionsSorted[i]);
             }
           }
           if (reqAmount > 0) {
@@ -74,6 +75,7 @@ router.get("/", async (req, res) => {
           if (!bestPackage || orderAmount < bestPackage) {
             bestPackage = orderAmount;
             bestItemCost = cost;
+            bestOrder = [...bestOrder, ...order];
           }
           console.log("yep here i am", cost, orderAmount);
         }
@@ -91,6 +93,7 @@ router.get("/", async (req, res) => {
       message: `total cost is $${(totalCost / 100).toFixed(
         2
       )}, total number of packages is ${totalPackages}`,
+      bestOrder,
     });
   } catch (err) {
     res.status(500).json(err);
