@@ -25,6 +25,9 @@ From Visual Studio Code or the code editor of your choice:
     2.3 Add your own MySQL Workbench Username and Password to the env.EXAMPLE file.
     2.4 Re-name the file to .env (i.e. remove .EXAMPLE).
     2.5 Save your changes.
+    
+    // DROP DATABASE IF EXISTS coding_challenge_Tom_H_db; is the first line of the schema. if a database of that name exists it will replace it.
+    
     2.6 Locate and open db\schema.sql.
     2.7 Copy and paste the database schema into a new MySQL Workbench query tab and run it. Refresh and view your updated schemas to ensure that     
         coding_challenge_Tom_H_db now appears.
