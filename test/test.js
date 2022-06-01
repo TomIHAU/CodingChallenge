@@ -138,10 +138,4 @@ describe("Testing Routes and logic", function () {
         });
     });
   });
-
-  // describe("", function () {
-  //   it("", function () {});
-  // });
 });
-
-let userRequest = { CE: 10, HM: 8 };
