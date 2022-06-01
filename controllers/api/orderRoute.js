@@ -14,14 +14,15 @@ router.get("/", async (req, res) => {
       const productData = await Products.findOne({
         where: { code: key },
       });
+      //returns a 400 if the user has entered the wrong key -> if the product doesn't exist
       if (!productData) {
         res
           .status(400)
           .json({ message: "no such product please try ordering again" });
         return;
       }
+
       const product = productData.get({ plain: true });
-      console.log(product, "helllllo");
       const packagingData = await Packaging.findOne({
         where: { product_id: product.id },
         include: Options,
@@ -55,7 +56,6 @@ router.get("/", async (req, res) => {
             i < optionsSorted.length &&
             (!bestPackage || orderAmount < bestPackage)
           ) {
-            console.log(i, cost);
             if (optionsSorted[i].quantity > reqAmount) {
               i++;
             } else {
@@ -70,6 +70,7 @@ router.get("/", async (req, res) => {
             // adds the products to the total cost without discount.
             cost += reqAmount * product.price;
             orderAmount += reqAmount;
+            order.push({ singleOrders: reqAmount, code: key });
           }
 
           if (!bestPackage || orderAmount < bestPackage) {
@@ -77,18 +78,18 @@ router.get("/", async (req, res) => {
             bestItemCost = cost;
             bestOrder = [...bestOrder, ...order];
           }
-          console.log("yep here i am", cost, orderAmount);
         }
 
         //adds cost and packages after best conditions are found
         totalCost += bestItemCost;
         totalPackages += bestPackage;
-
-        console.log(optionsSorted);
+      } else {
+        //if no packaging exists for the product it adds it directly to the totals
+        totalCost += req.body[key] * product.price;
+        totalPackages += req.body[key];
+        bestOrder.push({ singleOrders: req.body[key], code: key });
       }
     }
-    console.log(totalCost);
-    console.log(totalPackages);
     res.status(200).json({
       message: `total cost is $${(totalCost / 100).toFixed(
         2

@@ -4,6 +4,7 @@ const { Products } = require("../../models");
 router.post("/", async (req, res) => {
   try {
     const { name, code, price } = req.body;
+    //returns a 400 if the user doesn't send all the key value pairs
     if (!name || !code || !price) {
       res.status(400).json({ message: "please input all required data" });
       return;
@@ -35,6 +36,7 @@ router.get("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const { name, code, price } = req.body;
+    //returns a 400 if the user doesn't send all the key value pairs
     if (!name || !code || !price) {
       res.status(400).json({ message: "please input all required data" });
       return;
@@ -50,6 +52,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+//TODO: cascading delete still not working.
 router.delete("/:id", async (req, res) => {
   try {
     const prod_id = await Products.findByPk(req.params.id);
