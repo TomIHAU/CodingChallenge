@@ -94,6 +94,8 @@ router.get("/", async (req, res) => {
       message: `total cost is $${(totalCost / 100).toFixed(
         2
       )}, total number of packages is ${totalPackages}`,
+      totalCost: (totalCost / 100).toFixed(2),
+      totalPackages,
       bestOrder,
     });
   } catch (err) {

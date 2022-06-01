@@ -1,23 +1,37 @@
-let assert = require("assert");
-let app = require("../server");
-const sequelize = require("../config/connection");
 let chai = require("chai");
 let chaiHttp = require("chai-http");
 let server = require("../server");
-const { doesNotMatch } = require("assert");
 let should = chai.should();
 
 chai.use(chaiHttp);
 
 describe("Testing Routes and logic", function () {
-  it("db connection connect should ...", (done) => {
-    sequelize.sync(function (err, result) {
-      if (err) {
-        done(err);
-        return;
-      }
-      expect(result).to.equal("Now listening");
-      done();
+  describe("#GET order CE: 10, HM: 14, SS:3", function () {
+    it("creating a new option for the packaging", (done) => {
+      let order = { CE: 10, HM: 14, SS: 3 };
+      chai
+        .request(server)
+        .get("/api/order")
+        .send(order)
+        .end((err, res) => {
+          res.body.totalPackages.should.be.eql(8);
+          res.body.totalCost.should.be.eql((156.6).toFixed(2));
+          res.should.have.status(200);
+          done();
+        });
+    });
+  });
+  describe("#GET order", function () {
+    it("creating a new option for the packaging", (done) => {
+      let order = { CE: 10, HM: 8 };
+      chai
+        .request(server)
+        .get("/api/order")
+        .send(order)
+        .end((err, res) => {
+          res.should.have.status(200);
+          done();
+        });
     });
   });
   describe("#GET products", function () {
@@ -28,8 +42,8 @@ describe("Testing Routes and logic", function () {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("array");
+          done();
         });
-      done();
     });
   });
   describe("#POST products", function () {
@@ -46,8 +60,8 @@ describe("Testing Routes and logic", function () {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("object");
+          done();
         });
-      done();
     });
   });
   describe("#POST products", function () {
@@ -62,8 +76,8 @@ describe("Testing Routes and logic", function () {
         .send(newProduct)
         .end((err, res) => {
           res.should.have.status(400);
+          done();
         });
-      done();
     });
   });
   describe("#PUT products", function () {
@@ -79,8 +93,8 @@ describe("Testing Routes and logic", function () {
         .send(newProduct)
         .end((err, res) => {
           res.should.have.status(200);
+          done();
         });
-      done();
     });
   });
   describe("#PUT products", function () {
@@ -95,8 +109,8 @@ describe("Testing Routes and logic", function () {
         .send(newProduct)
         .end((err, res) => {
           res.should.have.status(400);
+          done();
         });
-      done();
     });
   });
   describe("#GET packaging", function () {
@@ -107,11 +121,11 @@ describe("Testing Routes and logic", function () {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("array");
+          done();
         });
-      done();
     });
   });
-  describe("#Post packaging", function () {
+  describe("#POST packaging", function () {
     it("creating a new option for the packaging", (done) => {
       let newOption = { quantity: 10, price: 9000 };
       chai
@@ -120,10 +134,11 @@ describe("Testing Routes and logic", function () {
         .send(newOption)
         .end((err, res) => {
           res.should.have.status(200);
+          done();
         });
-      done();
     });
   });
+
   // describe("", function () {
   //   it("", function () {});
   // });
