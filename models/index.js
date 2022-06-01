@@ -14,7 +14,6 @@ Products.hasMany(Packaging, {
 });
 
 Packaging.hasMany(Options, {
-  foreignKey: "packaging_id",
   onDelete: "cascade",
 });
 

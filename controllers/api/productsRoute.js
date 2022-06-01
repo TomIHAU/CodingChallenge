@@ -52,7 +52,6 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-//TODO: cascading delete still not working.
 router.delete("/:id", async (req, res) => {
   try {
     const prod_id = await Products.findByPk(req.params.id);
@@ -61,6 +60,7 @@ router.delete("/:id", async (req, res) => {
       return;
     }
     await prod_id.destroy();
+    res.status(200).json({ message: "product deleted" });
     return;
   } catch (err) {
     console.log(err);
