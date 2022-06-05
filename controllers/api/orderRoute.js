@@ -13,6 +13,7 @@ router.get("/", async (req, res) => {
     for (let key in req.body) {
       const productData = await Products.findOne({
         where: { code: key },
+        include: Options,
       });
       //returns a 400 if the user has entered the wrong key -> if the product doesn't exist
       if (!productData) {
@@ -23,16 +24,10 @@ router.get("/", async (req, res) => {
       }
 
       const product = productData.get({ plain: true });
-      const packagingData = await Packaging.findOne({
-        where: { product_id: product.id },
-        include: Options,
-      });
 
-      if (packagingData) {
-        const packaging = packagingData.get({ plain: true });
-
+      if (product.options) {
         //sorts the options by the quantity. so the order can be more easily divided up.
-        const optionsSorted = packaging.options
+        const optionsSorted = product.options
           .map((e) => e)
           .sort((a, b) => b.quantity - a.quantity);
 
