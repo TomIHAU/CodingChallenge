@@ -46,6 +46,13 @@ router.put("/:id", async (req, res) => {
       { where: { id: req.params.id } }
     );
 
+    if (!productChange[0]) {
+      res.status(400).json({
+        message:
+          "no product with this id exists or you are updating the product with the old data",
+      });
+    }
+
     res.status(200).json(productChange);
   } catch (err) {
     res.status(500).json(err);

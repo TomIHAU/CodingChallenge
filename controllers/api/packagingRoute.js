@@ -29,20 +29,34 @@ router.get("/", async (req, res) => {
 
 router.post("/:id", async (req, res) => {
   try {
+    let package;
+
     const exists = await Packaging.findOne({
       where: { product_id: req.params.id },
     });
+
     if (!exists) {
+      console.log("askdlfjhalskdjfhlaskjdfhlaskjdfhlaskjdfhlaskjdfhl");
       const packagingData = await Packaging.Create({
         product_id: req.params.id,
       });
+      
+      console.log(packagingData);
+      package = packagingData.get({ plain: true });
+    } else {
+      package = exists.get({ plain: true });
     }
+    console.log("exists", exists ? true : false);
+    console.log("packagingData", package);
     const { quantity, price } = req.body;
+
+    console.log("quantity, price", quantity, price);
+
     if (!quantity || !price) {
       res.status(400).json({ message: "please input new options data" });
     }
     const newOption = await Options.create({
-      packaging_id: req.params.id,
+      packaging_id: package.id,
       quantity,
       price,
     });

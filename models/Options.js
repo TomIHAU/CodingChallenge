@@ -15,7 +15,7 @@ Options.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "packaging",
+        model: "products",
         key: "id",
       },
     },
