@@ -11,7 +11,7 @@ Options.init(
       primaryKey: true,
       autoIncrement: true,
     },
-    packaging_id: {
+    product_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {

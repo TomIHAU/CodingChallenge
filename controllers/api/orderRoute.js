@@ -25,7 +25,7 @@ router.get("/", async (req, res) => {
 
       const product = productData.get({ plain: true });
 
-      if (product.options) {
+      if (product.options[0]) {
         //sorts the options by the quantity. so the order can be more easily divided up.
         const optionsSorted = product.options
           .map((e) => e)
