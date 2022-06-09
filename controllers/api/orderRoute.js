@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-const { Packaging, Products, Options } = require("../../models");
+const { Products, Options } = require("../../models");
 
 router.get("/", async (req, res) => {
   try {
@@ -8,13 +8,15 @@ router.get("/", async (req, res) => {
     let totalPackages = 0;
     let bestOrder = [];
 
-    //loops through the order by key. the request data structure should use the product code as the key and the order amount as the value e.g. CE:10
+    //loops through the order by key. the request data structure should use the product code as the key and the order amount as the value
+    // e.g. CE:10
 
     for (let key in req.body) {
       const productData = await Products.findOne({
         where: { code: key },
         include: Options,
       });
+
       //returns a 400 if the user has entered the wrong key -> if the product doesn't exist
       if (!productData) {
         res
@@ -27,9 +29,10 @@ router.get("/", async (req, res) => {
 
       if (product.options[0]) {
         //sorts the options by the quantity. so the order can be more easily divided up.
-        const optionsSorted = product.options
-          .map((e) => e)
-          .sort((a, b) => b.quantity - a.quantity);
+        product.options.push({ price: product.price, quantity: 1 });
+        const optionsSorted = product.options.sort(
+          (a, b) => a.price / a.quantity - b.price / b.quantity
+        );
 
         // starts the index at a different point in the while loop to insure the lowest package amount can be found;
         // e.g. if a packages of 90 and 33 exist and an order of 99 is requested
@@ -37,38 +40,32 @@ router.get("/", async (req, res) => {
 
         let bestPackage;
         let bestItemCost = 0;
+
         for (let i = 0; i < optionsSorted.length; i++) {
           let reqAmount = req.body[key];
           let orderAmount = 0;
           let cost = 0;
           let order = [];
-
+          let j = i;
           // loops through the options while there is requests left and
           // while there are possible options to pick from and while it has less orders than the lowest ordered
 
           while (
             reqAmount > 0 &&
-            i < optionsSorted.length &&
-            (!bestPackage || orderAmount < bestPackage)
+            j < optionsSorted.length &&
+            (!bestItemCost || cost < bestItemCost)
           ) {
-            if (optionsSorted[i].quantity > reqAmount) {
-              i++;
+            if (optionsSorted[j].quantity > reqAmount) {
+              j++;
             } else {
-              reqAmount -= optionsSorted[i].quantity;
-              cost += optionsSorted[i].price;
+              reqAmount -= optionsSorted[j].quantity;
+              cost += optionsSorted[j].price;
               orderAmount++;
-              order.push(optionsSorted[i]);
+              order.push(optionsSorted[j]);
             }
           }
-          if (reqAmount > 0) {
-            // if no packages are found. or if products remain.
-            // adds the products to the total cost without discount.
-            cost += reqAmount * product.price;
-            orderAmount += reqAmount;
-            order.push({ singleOrders: reqAmount, code: key });
-          }
 
-          if (!bestPackage || orderAmount < bestPackage) {
+          if (!bestItemCost || cost < bestItemCost) {
             bestPackage = orderAmount;
             bestItemCost = cost;
             bestOrder = [...bestOrder, ...order];

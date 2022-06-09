@@ -51,7 +51,7 @@ describe("Testing Routes and logic", function () {
       let newProduct = {
         name: "This is a new product",
         code: "NP",
-        price: 3200,
+        price: "3200",
       };
       chai
         .request(server)
@@ -64,7 +64,25 @@ describe("Testing Routes and logic", function () {
         });
     });
   });
-  describe("#POST products", function () {
+  describe("#POST products - negative number", function () {
+    it("testing for negative number", (done) => {
+      let newProduct = {
+        name: "This is a new product",
+        code: "NP",
+        price: -3200,
+      };
+      chai
+        .request(server)
+        .post("/api/products")
+        .send(newProduct)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a("object");
+          done();
+        });
+    });
+  });
+  describe("#POST products - not enough info", function () {
     it("UNsuccessfully creates a new product", (done) => {
       let newProduct = {
         name: "This is a new product",
@@ -80,7 +98,7 @@ describe("Testing Routes and logic", function () {
         });
     });
   });
-  describe("#PUT products", function () {
+  describe("#PATCH products", function () {
     it("successfully alters a product", (done) => {
       let newProduct = {
         name: "This is an altered product",
@@ -89,7 +107,7 @@ describe("Testing Routes and logic", function () {
       };
       chai
         .request(server)
-        .put("/api/products/1")
+        .patch("/api/products/1")
         .send(newProduct)
         .end((err, res) => {
           res.should.have.status(200);
@@ -97,7 +115,7 @@ describe("Testing Routes and logic", function () {
         });
     });
   });
-  describe("#PUT products", function () {
+  describe("#PATCH products", function () {
     it("UNsuccessfully alters a product", (done) => {
       let newProduct = {
         name: "This is an altered product",
@@ -105,7 +123,7 @@ describe("Testing Routes and logic", function () {
       };
       chai
         .request(server)
-        .put("/api/products/1")
+        .patch("/api/products/1")
         .send(newProduct)
         .end((err, res) => {
           res.should.have.status(400);
@@ -121,6 +139,19 @@ describe("Testing Routes and logic", function () {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("array");
+          done();
+        });
+    });
+  });
+  describe("#POST packaging - 400", function () {
+    it("failing to create a new option for the packaging", (done) => {
+      let newOption = { quantity: 10, price: -9000 };
+      chai
+        .request(server)
+        .post("/api/packaging/1")
+        .send(newOption)
+        .end((err, res) => {
+          res.should.have.status(400);
           done();
         });
     });

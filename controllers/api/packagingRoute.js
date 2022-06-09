@@ -1,6 +1,10 @@
 const router = require("express").Router();
 const { Options, Products } = require("../../models");
 
+function testNeg(price) {
+  return price <= 0;
+}
+
 router.get("/", async (req, res) => {
   try {
     const productData = await Products.findAll({
@@ -36,7 +40,12 @@ router.post("/:id", async (req, res) => {
     if (!quantity || !price) {
       res.status(400).json({ message: "please input new options data" });
     }
-
+    if (!typeof price === "number" || testNeg(price)) {
+      res
+        .status(400)
+        .json({ message: "cant have a price be negative or zero" });
+      return;
+    }
     const newOption = await Options.create({
       product_id: req.params.id,
       quantity,

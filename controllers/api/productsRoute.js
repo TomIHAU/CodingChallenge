@@ -1,14 +1,26 @@
 const router = require("express").Router();
 const { Products } = require("../../models");
 
+function testNeg(price) {
+  return price <= 0;
+}
+
 router.post("/", async (req, res) => {
   try {
     const { name, code, price } = req.body;
     //returns a 400 if the user doesn't send all the key value pairs
+
     if (!name || !code || !price) {
       res.status(400).json({ message: "please input all required data" });
       return;
     }
+    if (!typeof price === "number" || testNeg(price)) {
+      res
+        .status(400)
+        .json({ message: "cant have a price be negative or zero" });
+      return;
+    }
+
     const newProduct = await Products.create({
       name,
       code,
@@ -33,19 +45,29 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.patch("/:id", async (req, res) => {
   try {
-    const { name, code, price } = req.body;
+    const price = req.body.price;
     //returns a 400 if the user doesn't send all the key value pairs
-    if (!name || !code || !price) {
-      res.status(400).json({ message: "please input all required data" });
+
+    if (testNeg(price)) {
+      res
+        .status(400)
+        .json({ message: "cant have a price be negative or zero" });
+      return;
+    }
+    if (!price) {
+      res.status(400).json({ message: "please input price" });
       return;
     }
     const productChange = await Products.update(
-      { name, code, price },
+      { price },
       { where: { id: req.params.id } }
     );
 
+    const updatedData = await Products.findByPk(req.params.id);
+    const updated = updatedData.get({ plain: true });
+    console.log(updated);
     if (!productChange[0]) {
       res.status(400).json({
         message:
@@ -53,7 +75,7 @@ router.put("/:id", async (req, res) => {
       });
     }
 
-    res.status(200).json(productChange);
+    res.status(200).json(updated);
   } catch (err) {
     res.status(500).json(err);
   }
